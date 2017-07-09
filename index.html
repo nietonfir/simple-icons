@@ -551,6 +551,14 @@
                 $search.classList.remove('search--active');
                 search('');
             }, false);
+
+            window.addEventListener("keydown", function(e){
+                if (e.ctrlKey && e.keyCode === 70) {
+                    e.preventDefault();
+                    $searchInput.focus();
+                    $searchInput.select();
+                }
+            });
         })( document );
     </script>
 </body>
