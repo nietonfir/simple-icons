@@ -333,16 +333,29 @@
             grid-row-end: span 2;
             height: auto;
         }
+        .grid-item--none-found {
+            grid-column: 1 / -2;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 1.5rem;
+        }
         @media (min-width: 21.75rem) {
             .grid-item--ad {
                 grid-column: -3 / -1;
             }
+            .grid-item--none-found {
+                grid-column: 1 / -3;
+            }
         }
         @supports not (display: grid) {
-            .grid-item--ad {
+            .grid-item--ad, .grid-item--none-found {
                 width: 100%;
             }
         }
+
+        
+
 
         .grid-item__link {
             color: #FFFFFF;
@@ -438,9 +451,12 @@
             <li class="grid-item grid-item--ad">
                 <script async type="text/javascript" src="//cdn.carbonads.com/carbon.js?zoneid=1696&amp;serve=CVYD42T&amp;placement=simpleiconsorg" id="_carbonads_js"></script>
             </li>
+            <li class="grid-item--none-found hidden">
+                No matching icons found
+            </li>
             {% for icon in iconsArray %}
                 {% assign iconArray = icon | split: "," %}
-                <li class="grid-item" style="background-color: #{{ iconArray[4] }}">
+                <li class="grid-item grid-item--icon" style="background-color: #{{ iconArray[4] }}">
                     <a class="grid-item__link" href="/icons/{{ iconArray[3] }}.svg" download>
                         {% assign filePath = iconArray[3] | prepend: "icons/" | append: ".svg" %}
                         {% include_relative {{ filePath }} %}
@@ -451,7 +467,7 @@
             {% endfor %}
             {% for icon in greyscaleIconsArray %}
                 {% assign iconArray = icon | split: "," %}
-                <li class="grid-item" style="background-color: #{{ iconArray[4] }}">
+                <li class="grid-item grid-item--icon" style="background-color: #{{ iconArray[4] }}">
                     <a class="grid-item__link" href="/icons/{{ iconArray[1] }}.svg" download>
                         {% assign filePath = iconArray[1] | prepend: "icons/" | append: ".svg" %}
                         {% include_relative {{ filePath }} %}
@@ -478,8 +494,9 @@
     {% endfor %}
     <script type="text/javascript">
         (function(document) {
-            var icons        = [{{ allIconNames }}],
-                $icons       = document.querySelectorAll('.grid > .grid-item:not(.grid-item--ad)'),
+            var icons        = [{{ allIconNames }}].map(normalizeSearch),
+                $icons       = document.querySelectorAll('.grid-item--icon'),
+                $noneFound   = document.querySelector('.grid-item--none-found'),
                 $search      = document.querySelector('.search'),
                 $searchClose = $search.querySelector('.search__close'),
                 $searchInput = $search.querySelector('input');
@@ -521,15 +538,24 @@
             }
 
             function search(value) {
-                value = value.toLowerCase();
+                value = normalizeSearch(value);
 
+                var found = false;
                 icons.forEach(function(e, i) {
                     if (e.indexOf(value) > -1) {
                         $icons[i].classList.remove('hidden');
+                        found = true;
                     } else {
                         $icons[i].classList.add('hidden');
                     }
                 })
+
+                $noneFound.classList.toggle('hidden', found);
+            }
+
+            function normalizeSearch(value) {
+                return value.toLowerCase()
+                        .replace(/ /g, "");
             }
 
             $search.addEventListener('input', debounce(function(e) {
@@ -541,8 +567,9 @@
                     search(value);
                 } else {
                     $search.classList.remove('search--active');
+                    search("");
                 }
-            }, 250), false);
+            }, 50), false);
             $searchClose.addEventListener('click', function(e) {
                 e.stopPropagation();
 
@@ -550,6 +577,14 @@
                 $search.classList.remove('search--active');
                 search('');
             }, false);
+
+            window.addEventListener("keydown", function(e){
+                if (e.ctrlKey && e.keyCode === 70) {
+                    e.preventDefault();
+                    $searchInput.focus();
+                    $searchInput.select();
+                }
+            });
         })( document );
     </script>
 </body>
