@@ -550,11 +550,7 @@
                     }
                 })
 
-                if (!found) {
-                    $noneFound.classList.remove('hidden');
-                } else {
-                    $noneFound.classList.add('hidden');
-                }
+                $noneFound.classList.toggle('hidden', found);
             }
 
             function normalizeSearch(value) {
