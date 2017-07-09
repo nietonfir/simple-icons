@@ -541,6 +541,7 @@
                     search(value);
                 } else {
                     $search.classList.remove('search--active');
+                    search("");
                 }
             }, 50), false);
             $searchClose.addEventListener('click', function(e) {
