@@ -494,7 +494,7 @@
     {% endfor %}
     <script type="text/javascript">
         (function(document) {
-            var icons        = [{{ allIconNames }}],
+            var icons        = [{{ allIconNames }}].map(normalizeSearch),
                 $icons       = document.querySelectorAll('.grid-item--icon'),
                 $noneFound   = document.querySelector('.grid-item--none-found'),
                 $search      = document.querySelector('.search'),
@@ -538,7 +538,7 @@
             }
 
             function search(value) {
-                value = value.toLowerCase();
+                value = normalizeSearch(value);
 
                 var found = false;
                 icons.forEach(function(e, i) {
@@ -555,6 +555,11 @@
                 } else {
                     $noneFound.classList.add('hidden');
                 }
+            }
+
+            function normalizeSearch(value) {
+                return value.toLowerCase()
+                        .replace(/ /g, "");
             }
 
             $search.addEventListener('input', debounce(function(e) {
