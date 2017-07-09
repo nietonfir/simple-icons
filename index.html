@@ -456,7 +456,7 @@
             </li>
             {% for icon in iconsArray %}
                 {% assign iconArray = icon | split: "," %}
-                <li class="grid-item" style="background-color: #{{ iconArray[4] }}">
+                <li class="grid-item grid-item--icon" style="background-color: #{{ iconArray[4] }}">
                     <a class="grid-item__link" href="/icons/{{ iconArray[3] }}.svg" download>
                         {% assign filePath = iconArray[3] | prepend: "icons/" | append: ".svg" %}
                         {% include_relative {{ filePath }} %}
@@ -467,7 +467,7 @@
             {% endfor %}
             {% for icon in greyscaleIconsArray %}
                 {% assign iconArray = icon | split: "," %}
-                <li class="grid-item" style="background-color: #{{ iconArray[4] }}">
+                <li class="grid-item grid-item--icon" style="background-color: #{{ iconArray[4] }}">
                     <a class="grid-item__link" href="/icons/{{ iconArray[1] }}.svg" download>
                         {% assign filePath = iconArray[1] | prepend: "icons/" | append: ".svg" %}
                         {% include_relative {{ filePath }} %}
@@ -495,7 +495,7 @@
     <script type="text/javascript">
         (function(document) {
             var icons        = [{{ allIconNames }}],
-                $icons       = document.querySelectorAll('.grid > .grid-item:not(.grid-item--ad):not(.grid-item--none-found)'),
+                $icons       = document.querySelectorAll('.grid-item--icon'),
                 $noneFound   = document.querySelector('.grid-item--none-found'),
                 $search      = document.querySelector('.search'),
                 $searchClose = $search.querySelector('.search__close'),
